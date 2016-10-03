@@ -16,11 +16,6 @@ describe Oystercard do
       message = "Beyond limit of #{described_class::MAXIMUM_BALANCE}"
       expect{subject.top_up(1)}.to raise_error message
     end
-
-    it 'can deduct the balance' do
-      expect{ subject.deduct 2}.to change{ subject.balance }.by -2
-    end
-
   end
 
   describe '#top_up' do
@@ -29,15 +24,8 @@ describe Oystercard do
     it 'can top up the balance' do
       expect{ subject.top_up 1}.to change{ subject.balance }.by 1
     end
-
-
   end
 
-  describe '#deduct' do
-    it { is_expected.to respond_to(:deduct).with(1).argument }
-
-
-  end
 
   describe '#in_journey?' do
     it { is_expected.to respond_to(:in_journey?) }
@@ -66,10 +54,10 @@ describe Oystercard do
       subject.touch_out
       expect(subject).not_to be_in_journey
     end
+
+    it 'deducts the correct amount from card' do
+      expect{ subject.touch_out }.to change{ subject.balance }.by (-described_class::MINIMUM_FARE)
+    end
   end
-
-
-
-
 
 end
