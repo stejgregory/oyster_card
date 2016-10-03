@@ -13,6 +13,12 @@ describe Oystercard do
       expect{ subject.top_up 1}.to change{ subject.balance }.by 1
     end
 
+    it 'can not be topped up beyond limit' do
+      message = "Beyond limit of #{described_class::MAXIMUM_BALANCE}"
+      subject.top_up(described_class::MAXIMUM_BALANCE)
+      expect {subject.top_up(1)}.to raise_error message
+    end
+
   end
 
 end
