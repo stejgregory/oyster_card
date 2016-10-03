@@ -14,7 +14,7 @@ describe Oystercard do
 
     it 'can not be topped up beyond limit' do
       message = "Beyond limit of #{described_class::MAXIMUM_BALANCE}"
-      expect {subject.top_up(1)}.to raise_error message
+      expect{subject.top_up(1)}.to raise_error message
     end
 
     it 'can deduct the balance' do
@@ -49,13 +49,19 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'changes in_journey to true' do
+      subject.top_up(described_class::MAXIMUM_BALANCE)
       subject.touch_in
       expect(subject).to be_in_journey
+    end
+
+    it 'raises error when insufficient balance' do
+      expect{subject.touch_in}.to raise_error "Insufficient balance"
     end
   end
 
   describe '#touch_out' do
     it 'changes in_journey to false' do
+      subject.top_up(described_class::MAXIMUM_BALANCE)
       subject.touch_in
       subject.touch_out
       expect(subject).not_to be_in_journey
