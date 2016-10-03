@@ -29,6 +29,7 @@ describe Oystercard do
   end
 
   it "will know when the card has been used to touch-in" do
+    card.topup(1.0)
     expect(card.touch_in?).to eq true
   end
 
@@ -37,8 +38,14 @@ describe Oystercard do
   end
 
   it "will know when the card is in journey" do
+    card.topup(1.0)
     card.touch_in?
     expect(card.in_journey?).to eq true
+  end
+
+  it "will onll allow a card to touch_in if it has a balance >= £1" do
+  card.topup(0.5)
+  expect(card.touch_in?).to eq "Not enough funds on card."
   end
 
 end

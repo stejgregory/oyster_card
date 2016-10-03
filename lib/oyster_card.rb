@@ -1,5 +1,5 @@
 class Oystercard
-DEFAULT_BALANCE = 0
+DEFAULT_BALANCE = 0.0
 
   def initialize
     @balance = DEFAULT_BALANCE
@@ -23,7 +23,11 @@ DEFAULT_BALANCE = 0
   end
 
   def touch_in?
+    if (@balance < 1.0)
+      "Not enough funds on card."
+    else
     @in_use = true
+    end
   end
 
   def touch_out?
