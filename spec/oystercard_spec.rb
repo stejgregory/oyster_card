@@ -10,4 +10,10 @@ describe Oystercard do
       expect(subject.balance).to eq 0
     end
   end
+  
+  it 'allows a user to top-up their oystercard' do
+      card = Oystercard.new
+      card.top_up(40)
+      expect(card.balance).to eq 40
+  end
 end
