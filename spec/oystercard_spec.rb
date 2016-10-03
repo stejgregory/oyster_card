@@ -3,8 +3,6 @@ require 'oystercard'
 describe Oystercard do
   subject(:oystercard) {described_class.new}
 
-  it { is_expected.to respond_to :balance }
-
   describe 'initialization' do
     it 'has a default balance of 0' do
       expect(subject.balance).to eq 0
@@ -15,6 +13,13 @@ describe Oystercard do
     card = Oystercard.new
     card.top_up(40)
     expect(card.balance).to eq 40
+  end
+  
+  it 'allows a fare to be deducted from their oystercard' do
+    card = Oystercard.new
+    card.top_up(40)
+    card.deduct(10)
+    expect(card.balance).to eq 30
   end
 
   it 'will raise an error if maximum card value is reached' do
