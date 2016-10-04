@@ -23,12 +23,6 @@ describe Oystercard do
     end
   end
 
-  it 'allows a fare to be deducted from their oystercard' do
-    subject.top_up(described_class::MAXIMUM_BALANCE)
-    subject.deduct(described_class::MAXIMUM_BALANCE)
-    expect(subject.balance).to eq 0
-  end
-
   describe '#in_journey?' do
     it 'will be initially set to false' do
       expect(subject.in_journey).to eq false
@@ -49,13 +43,14 @@ describe Oystercard do
       it 'will set #in_journey? to true' do
         expect(subject.in_journey).to eq true
       end
-
     end
-
     describe '#touch_out' do
       it 'will set #in_journey? to false' do
         subject.touch_out
         expect(subject.in_journey).to eq false
+      end
+      it 'will reduce balance by minimum fare' do
+        expect {subject.touch_out}.to change {subject.balance}.by(-described_class::MINIMUM_FARE)
       end
     end
   end
