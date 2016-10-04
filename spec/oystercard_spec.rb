@@ -2,6 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 
+    let(:station) {double(:station)}
+
   it 'balance is zero' do
     expect(subject.balance).to eq(0)
   end
@@ -38,19 +40,27 @@ describe Oystercard do
   describe '#touch_in' do
     it 'changes in_journey to true' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject).to be_in_journey
     end
 
     it 'raises error when insufficient balance' do
-      expect{subject.touch_in}.to raise_error "Insufficient balance"
+      expect{subject.touch_in(station)}.to raise_error "Insufficient balance"
     end
+
+    it 'stores entry station' do
+      subject.top_up(described_class::MAXIMUM_BALANCE)
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq station
+    end
+
+
   end
 
   describe '#touch_out' do
     it 'changes in_journey to false' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in
+      subject.touch_in(station)
       subject.touch_out
       expect(subject).not_to be_in_journey
     end
