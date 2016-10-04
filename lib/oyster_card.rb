@@ -1,6 +1,7 @@
 class Oystercard
 
   DEFAULT_BALANCE = 0.0
+  MAX_BALANCE = 90
 
 
 
@@ -8,7 +9,7 @@ class Oystercard
 
   def initialize
     @balance = DEFAULT_BALANCE
-    @in_use = false
+    @in_journey = false
   end
 
   def check_balance
@@ -16,11 +17,8 @@ class Oystercard
   end
 
   def topup(funds)
-    if (@balance + funds) > 90
-    "Error, this will exceed the £90 maximum balance."
-    else
+    fail "Error, this will exceed the £#{MAX_BALANCE} maximum balance." if (balance + funds) > MAX_BALANCE
     @balance = @balance + funds
-    end
   end
 
   def deduct(amount)
@@ -31,16 +29,16 @@ class Oystercard
     if (@balance < 1.0)
       "Not enough funds on card."
     else
-    @in_use = true
+    @in_journey = true
     end
   end
 
   def touch_out?
-    @in_use = false
+    @in_journey = false
   end
 
   def in_journey?
-    @in_use
+    @in_journey
   end
 
 end

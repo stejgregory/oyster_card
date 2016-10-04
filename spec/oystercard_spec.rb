@@ -42,7 +42,7 @@ describe Oystercard do
   end
 
 
-  describe '#top_up' do
+  describe '#topup' do
 
     it "tops up the card with additional funds, and increases the balance by that amount" do
       card.topup(10)
@@ -50,8 +50,9 @@ describe Oystercard do
     end
 
     it "sets a maximum topup limit of 90 pounds sterling" do
-      card.topup(90)
-      expect(card.topup(1)).to eq "Error, this will exceed the £90 maximum balance."
+      card = Oystercard.new
+      card.topup(described_class::MAX_BALANCE)
+      expect{ card.topup(1) }.to raise_error "Error, this will exceed the £#{described_class::MAX_BALANCE} maximum balance."
     end
   end
 end
