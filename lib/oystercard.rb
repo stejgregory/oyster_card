@@ -1,4 +1,6 @@
 
+require_relative 'journey'
+
 class Oystercard
 
   attr_reader :balance
