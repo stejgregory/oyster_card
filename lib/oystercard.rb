@@ -17,18 +17,21 @@ class Oystercard
   end
 
   def in_journey?
-    !@entry_station.nil?
+    if @journeys.empty?
+      false
+    else
+      @journeys.last[:exit_station].nil?
+    end
   end
 
   def touch_in(entry_station)
     fail "Insufficient balance" if balance < MINIMUM_FARE
-    @entry_station = entry_station
+    @journeys << { entry_station: entry_station, exit_station: nil }
   end
 
   def touch_out(exit_station)
     deduct(MINIMUM_FARE)
-    @journeys << { entry_station: @entry_station, exit_station: exit_station }
-    @entry_station = nil
+    @journeys.last[:exit_station] = exit_station
   end
 
   def journey_history
