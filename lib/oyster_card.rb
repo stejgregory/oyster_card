@@ -30,7 +30,7 @@ class Oystercard
   end
 
   def in_journey?
-    !!@start_station
+    @start_station == nil ? @in_journey = false : @in_journey = true 
   end
 
   private
