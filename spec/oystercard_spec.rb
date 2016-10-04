@@ -2,12 +2,12 @@ require 'oystercard'
 
 describe Oystercard do
 
-    let(:station) {double(:station)}
+  let(:entry_station) {double(:station)}
+  let(:exit_station) {double(:station)}
 
   it 'balance is zero' do
     expect(subject.balance).to eq(0)
   end
-
 
   context 'With max balance on card' do
     before do
@@ -28,7 +28,6 @@ describe Oystercard do
     end
   end
 
-
   describe '#in_journey?' do
     it { is_expected.to respond_to(:in_journey?) }
 
@@ -38,35 +37,57 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
-    it 'changes in_journey to true' do
-      subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in(station)
-      expect(subject).to be_in_journey
-    end
 
     it 'raises error when insufficient balance' do
-      expect{subject.touch_in(station)}.to raise_error "Insufficient balance"
+      expect{subject.touch_in(entry_station)}.to raise_error "Insufficient balance"
+    end
+
+    it 'changes in_journey to true' do
+      subject.top_up(described_class::MAXIMUM_BALANCE)
+      subject.touch_in(entry_station)
+      expect(subject).to be_in_journey
     end
 
     it 'stores entry station' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in(station)
-      expect(subject.entry_station).to eq station
+      subject.touch_in(entry_station)
+      expect(subject.entry_station).to eq entry_station
     end
-
-
   end
 
   describe '#touch_out' do
-    it 'changes in_journey to false' do
+
+    before do
       subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in(station)
-      subject.touch_out
+      subject.touch_in(entry_station)
+      subject.touch_out(exit_station)
+    end
+
+    # This is problematic because we're touching out twice and no error is raised
+    it 'deducts the correct amount from card' do
+      expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by (-described_class::MINIMUM_FARE)
+    end
+
+    it 'changes in_journey to false' do
       expect(subject).not_to be_in_journey
     end
 
-    it 'deducts the correct amount from card' do
-      expect{ subject.touch_out }.to change{ subject.balance }.by (-described_class::MINIMUM_FARE)
+    it 'sets entry station to nil' do
+      expect(subject.entry_station).to eq nil
+    end
+
+    it 'stores exit station' do
+      expect(subject.exit_station).to eq exit_station
+    end
+  end
+
+  describe '#journey_history' do
+    it 'returns entry and exit station' do
+      subject.top_up(described_class::MAXIMUM_BALANCE)
+      subject.touch_in(entry_station)
+      subject.touch_out(exit_station)
+      journey = { entry_station: entry_station, exit_station: exit_station }
+      expect(subject.journey_history).to eq [journey]
     end
   end
 
