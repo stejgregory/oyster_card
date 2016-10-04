@@ -1,7 +1,8 @@
 require 'oyster_card'
 
 describe Oystercard do
-  let(:card) { (Oystercard.new) }
+  let(:card) { Oystercard.new }
+  let(:station) { double :station }
 
   it "should have an opening balance = 0" do
     expect(Oystercard::DEFAULT_BALANCE).to eq(0)
@@ -27,7 +28,12 @@ describe Oystercard do
       expect(card).to be_in_journey
     end
 
-    it "will only allow a card to touch_in if there are sufficent funds" do
+    it "stores the entry station" do
+      card.touch_in(station)
+      expect(card.start_station).to eq station
+    end
+
+    it "will only allow a card to touch_in if there are sufficient funds" do
       expect{ card.touch_in }.to raise_error "Not enough funds on card."
     end
 
@@ -41,6 +47,10 @@ describe Oystercard do
       card.touch_in
       card.touch_out
       expect(card).not_to be_in_journey
+    end
+
+    it "will deduct the correct amount for the journey" do
+      expect { card.touch_out }.to change { card.balance }.by(-described_class::MINIMUM_FARE)
     end
 
   end
