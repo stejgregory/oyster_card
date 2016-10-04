@@ -51,15 +51,18 @@ describe Oystercard do
     end
     describe '#touch_out' do
       it 'will set #in_journey? to false' do
-        subject.touch_out
+        subject.touch_out(:exit_station)
         expect(subject.in_journey?).to eq false
       end
       it 'will reduce balance by minimum fare' do
-        expect {subject.touch_out}.to change {subject.balance}.by(-described_class::MINIMUM_FARE)
+        expect {subject.touch_out(:exit_station)}.to change {subject.balance}.by(-described_class::MINIMUM_FARE)
       end
       it 'will reset the entry station on exit' do
-        subject.touch_out
+        subject.touch_out(:exit_station)
         expect(subject.entry_station).to eq nil
+      end
+      it 'will add the journey to the journeys list' do
+        expect(subject.add_journey(:entry_station, :exit_station)).to eq @journeys
       end
     end
   end
