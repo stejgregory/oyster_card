@@ -4,10 +4,17 @@ describe Oystercard do
   let(:card) { Oystercard.new }
   let(:station) { double :station }
 
-  it "should have an opening balance = 0" do
-    expect(Oystercard::DEFAULT_BALANCE).to eq(0)
-  end
+  describe 'initialized card' do
 
+    it "checks that card has an empty list of journeys by default" do
+      expect(card.journeys).to be_empty
+    end
+
+    it "should have an opening balance = 0" do
+      expect(Oystercard::DEFAULT_BALANCE).to eq(0)
+    end
+    
+  end
 
 
   describe '#in_journey'  do
