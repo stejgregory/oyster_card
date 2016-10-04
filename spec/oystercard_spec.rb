@@ -19,14 +19,14 @@ describe Oystercard do
 
     it 'will raise an error if maximum card value is reached' do
       message = "Card limit of £#{described_class::MAXIMUM_BALANCE} has been reached."
-      expect{ subject.top_up(1) }.to raise_error message
+      expect{ subject.top_up(described_class::MINIMUM_BALANCE) }.to raise_error message
     end
   end
 
   it 'allows a fare to be deducted from their oystercard' do
     subject.top_up(described_class::MAXIMUM_BALANCE)
-    subject.deduct(10)
-    expect(subject.balance).to eq 80
+    subject.deduct(described_class::MAXIMUM_BALANCE)
+    expect(subject.balance).to eq 0
   end
 
   describe '#in_journey?' do
@@ -35,14 +35,21 @@ describe Oystercard do
     end
   end
 
+  it 'will raise error if balance is less than minimum fare' do
+    expect{ subject.touch_in }.to raise_error "Insufficient funds"
+
+  end
+
   context 'using a card' do
     before do
+      subject.top_up(described_class::MINIMUM_BALANCE)
       subject.touch_in
     end
     describe '#touch_in' do
       it 'will set #in_journey? to true' do
         expect(subject.in_journey).to eq true
       end
+
     end
 
     describe '#touch_out' do

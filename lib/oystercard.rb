@@ -3,6 +3,7 @@ class Oystercard
   attr_accessor :in_journey
 
   MAXIMUM_BALANCE = 90
+  MINIMUM_BALANCE = 1
 
   def initialize(balance = 0)#, limit = self.class::DEFAULT_LIMIT)
     @balance = balance
@@ -19,6 +20,7 @@ class Oystercard
   end
 
   def touch_in
+    fail "Insufficient funds" if @balance < MINIMUM_BALANCE
     @in_journey = true
   end
 
