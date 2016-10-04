@@ -4,10 +4,7 @@ describe Oystercard do
 
   let(:entry_station) {double(:station)}
   let(:exit_station) {double(:station)}
-
-  it 'balance is zero' do
-    expect(subject.balance).to eq(0)
-  end
+  let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
 
   context 'With max balance on card' do
     before do
@@ -48,11 +45,6 @@ describe Oystercard do
       expect(subject).to be_in_journey
     end
 
-    it 'stores entry station' do
-      subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in(entry_station)
-      expect(subject.entry_station).to eq entry_station
-    end
   end
 
   describe '#touch_out' do
@@ -72,13 +64,6 @@ describe Oystercard do
       expect(subject).not_to be_in_journey
     end
 
-    it 'sets entry station to nil' do
-      expect(subject.entry_station).to eq nil
-    end
-
-    it 'stores exit station' do
-      expect(subject.exit_station).to eq exit_station
-    end
   end
 
   describe '#journey_history' do
@@ -86,9 +71,19 @@ describe Oystercard do
       subject.top_up(described_class::MAXIMUM_BALANCE)
       subject.touch_in(entry_station)
       subject.touch_out(exit_station)
-      journey = { entry_station: entry_station, exit_station: exit_station }
-      expect(subject.journey_history).to eq [journey]
+      expect(subject.journey_history).to include journey
     end
+  end
+
+  describe '#initialize' do
+    it 'has empty list of journeys' do
+      expect(subject.journey_history).to be_empty
+    end
+
+    it 'balance is zero' do
+      expect(subject.balance).to eq(0)
+    end
+
   end
 
 end
