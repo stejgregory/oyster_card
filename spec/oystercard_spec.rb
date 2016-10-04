@@ -45,6 +45,13 @@ describe Oystercard do
       expect(subject).to be_in_journey
     end
 
+    it 'allows you to touch in twice, and creates a new journey for the second touch in' do
+      subject.top_up(described_class::MAXIMUM_BALANCE)
+      subject.touch_in(entry_station)
+      subject.touch_in(double(:station))
+      expect(subject.journey_history[-2][:exit_station]).to eq nil
+    end
+
   end
 
   describe '#touch_out' do
@@ -55,13 +62,17 @@ describe Oystercard do
       subject.touch_out(exit_station)
     end
 
-    # This is problematic because we're touching out twice and no error is raised
     it 'deducts the correct amount from card' do
       expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by (-described_class::MINIMUM_FARE)
     end
 
     it 'changes in_journey to false' do
       expect(subject).not_to be_in_journey
+    end
+
+    it 'allows you to touch in twice, and creates a new journey for the second touch in' do
+      subject.touch_out(double(:station))
+      expect(subject.journey_history[-1][:entry_station]).to eq nil
     end
 
   end

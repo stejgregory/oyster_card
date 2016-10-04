@@ -31,11 +31,11 @@ class Oystercard
 
   def touch_out(exit_station)
     deduct(MINIMUM_FARE)
-      if @journeys.last[:exit_station].nil?
-        @journeys.last[:exit_station] = exit_station
-      else
-        @journeys << { entry_station: nil, exit_station: exit_station }
-      end
+    if in_journey?
+      @journeys.last[:exit_station] = exit_station
+    else
+      @journeys << { entry_station: nil, exit_station: exit_station }
+    end
   end
 
   def journey_history
