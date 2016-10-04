@@ -25,33 +25,47 @@ describe Oystercard do
 
   describe '#in_journey?' do
     it 'will be initially set to false' do
-      expect(subject.in_journey).to eq false
+      expect(subject.in_journey?).to eq false
     end
   end
 
   it 'will raise error if balance is less than minimum fare' do
-    expect{ subject.touch_in }.to raise_error "Insufficient funds"
+    #allow(subject).to receive(:entry_station)
+    expect{ subject.touch_in(:entry_station) }.to raise_error "Insufficient funds"
 
   end
 
   context 'using a card' do
     before do
       subject.top_up(described_class::MINIMUM_BALANCE)
-      subject.touch_in
+      subject.touch_in(:entry_station)
     end
     describe '#touch_in' do
       it 'will set #in_journey? to true' do
-        expect(subject.in_journey).to eq true
+        expect(subject.in_journey?).to eq true
       end
+      it "will set station to entry station" do
+        expect(subject.entry_station).to eq :entry_station
+      end
+
     end
     describe '#touch_out' do
       it 'will set #in_journey? to false' do
         subject.touch_out
-        expect(subject.in_journey).to eq false
+        expect(subject.in_journey?).to eq false
       end
       it 'will reduce balance by minimum fare' do
         expect {subject.touch_out}.to change {subject.balance}.by(-described_class::MINIMUM_FARE)
       end
+      it 'will reset the entry station on exit' do
+        subject.touch_out
+        expect(subject.entry_station).to eq nil
+      end
     end
   end
+
+
+
+
+
 end
