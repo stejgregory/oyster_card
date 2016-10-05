@@ -63,8 +63,11 @@ describe Oystercard do
     #    expect(subject.add_journey(:entry_station)).to eq false
     #  end
       it 'will add the journey to the journeys list' do
+        subject.top_up(described_class::MINIMUM_BALANCE)
+        subject.touch_in(:entry_station)
+        subject.touch_out(:exit_station)
         subject.add_journey
-        expect {subject.add_journey}.to eq @current_journey
+        expect(@journeys).to eq [{:entry_station=>:entry_station, :exit_station=>:exit_station}]
       end
     end
   end

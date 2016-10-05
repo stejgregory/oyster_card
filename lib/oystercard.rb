@@ -23,7 +23,7 @@ class Oystercard
     fail "Insufficient funds" if @balance < MINIMUM_BALANCE
     @entry_station = entry_station
     #add_journey(entry_station)
-    in_journey?
+    #in_journey?
   end
 
   def touch_out(exit_station)
@@ -31,7 +31,7 @@ class Oystercard
     #@entry_station = nil
     @exit_station = exit_station
     #add_journey(exit_station)
-    in_journey?
+    #in_journey?
   end
 
   #def add_entry_station(entry_station)
@@ -45,8 +45,8 @@ class Oystercard
   def add_journey
     @current_journey = {entry_station: entry_station, exit_station: exit_station}
     @journeys << @current_journey
-    @exit_station == nil
-    @entry_station == nil
+    #@exit_station == nil
+    #@entry_station == nil
   end
 
   def in_journey?
