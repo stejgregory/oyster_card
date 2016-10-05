@@ -1,7 +1,7 @@
 # require 'station'
 
 class Journey
-DEFAULT_FARE = 6
+PENALTY_FARE = 6
 
 attr_reader :entry_station, :exit_station, :current_journey
 
@@ -15,11 +15,21 @@ attr_reader :entry_station, :exit_station, :current_journey
     @exit_station = station
   end
 
-  def fare(fare = DEFAULT_FARE)
-    if @entry_station == nil || @exit_station == nil
-      DEFAULT_FARE
-    else
+  def start(station)
+    @entry_station = station
+  end
+
+  def complete?
+    !!exit_station
+  end
+
+
+  def fare(fare = PENALTY_FARE)
+      if @entry_station == nil || @exit_station == nil
+      return PENALTY_FARE
+      else
       fare = 1
+      end
   end
 
 end

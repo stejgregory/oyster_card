@@ -17,9 +17,21 @@ describe Journey do
     end
   end
 
+  describe '#complete?' do
+    it "knows if a journey is not complete" do
+    expect(subject).not_to be_complete
+    end
+  end
+
   describe '#finish' do
     it 'it is set to exit_station' do
       expect(subject.finish(station)).to eq(station)
+    end
+  end
+
+  describe '#start' do
+    it 'it is set to entry_station' do
+      expect(subject.start(station)).to eq(station)
     end
   end
 
@@ -29,16 +41,22 @@ describe Journey do
     end
   end
 
-  context 'give an exit station' do
+  context 'give an entry exit station' do
+  let(:entry_station) {double :entry_station}
   let(:exit_station) {double :exit_station}
 
   before do
+    subject.start(entry_station)
     subject.finish(exit_station)
   end
 
     it 'calculates a fare' do
       expect(subject.fare).to eq 1
     end
+
+    it "knows if a journey is complete" do
+    expect(subject).to be_complete
+  end
   end
 
 
