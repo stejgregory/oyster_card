@@ -4,7 +4,7 @@ describe Oystercard do
 
   let(:entry_station) {double(:station)}
   let(:exit_station) {double(:station)}
-  let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
+  let(:journey) {double(:journey)} #{ {entry_station: entry_station, exit_station: exit_station} }
 
   context 'With max balance on card' do
     before do
@@ -25,33 +25,24 @@ describe Oystercard do
     end
   end
 
-  describe '#in_journey?' do
-    it { is_expected.to respond_to(:in_journey?) }
-
-    it 'new card not in_journey' do
-      expect(subject).not_to be_in_journey
-    end
-  end
-
   describe '#touch_in' do
 
     it 'raises error when insufficient balance' do
       expect{subject.touch_in(entry_station)}.to raise_error "Insufficient balance"
     end
 
-    it 'changes in_journey to true' do
+    it 'creates new journey' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
       subject.touch_in(entry_station)
-      expect(subject).to be_in_journey
+      expect(subject.journey_history[-1].entry_station).to eq(entry_station)
     end
 
-    it 'allows you to touch in twice, and creates a new journey for the second touch in' do
+    it 'if user touches in twice, end previous journey' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
       subject.touch_in(entry_station)
       subject.touch_in(double(:station))
-      expect(subject.journey_history[-2][:exit_station]).to eq nil
+      expect(subject.journey_history[-2].exit_station).to eq(nil)
     end
-
   end
 
   describe '#touch_out' do
@@ -66,23 +57,15 @@ describe Oystercard do
       expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by (-described_class::MINIMUM_FARE)
     end
 
-    it 'changes in_journey to false' do
-      expect(subject).not_to be_in_journey
+    it 'allows you to touch out without touching in and saves second station' do
+      second_touch_out = double(:station)
+      subject.touch_out(second_touch_out)
+      expect(subject.journey_history[-1].exit_station).to eq(second_touch_out)
     end
 
-    it 'allows you to touch in twice, and creates a new journey for the second touch in' do
+    it 'allows you to touch out twice with nil entry station' do
       subject.touch_out(double(:station))
-      expect(subject.journey_history[-1][:entry_station]).to eq nil
-    end
-
-  end
-
-  describe '#journey_history' do
-    it 'returns entry and exit station' do
-      subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in(entry_station)
-      subject.touch_out(exit_station)
-      expect(subject.journey_history).to include journey
+      expect(subject.journey_history[-1].entry_station).to eq nil
     end
   end
 
@@ -94,7 +77,6 @@ describe Oystercard do
     it 'balance is zero' do
       expect(subject.balance).to eq(0)
     end
-
   end
 
 end

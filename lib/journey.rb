@@ -10,10 +10,19 @@ class Journey
   def end(exit_station)
     @exit_station = exit_station
     @complete = true
+    fare
     self
   end
 
   def complete?
       @complete
+  end
+
+  def fare
+    if @entry_station == nil || @exit_station == nil
+      Oystercard::PENALTY_FARE
+    else
+      Oystercard::MINIMUM_FARE
+    end
   end
 end
