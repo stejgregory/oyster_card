@@ -1,7 +1,7 @@
 require 'oystercard'
 
 describe Oystercard do
-
+  subject { described_class.new }
   let(:entry_station) {double(:station)}
   let(:exit_station) {double(:station)}
   let(:journey) {double(:journey)} #{ {entry_station: entry_station, exit_station: exit_station} }
@@ -35,7 +35,7 @@ describe Oystercard do
       subject.top_up(described_class::MAXIMUM_BALANCE)
       expect(subject.touch_in(entry_station).class).to eq(Journey)
     end
-    
+
     it 'if user touches in twice, they are charged a penalty' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
       subject.touch_in(entry_station)
@@ -45,10 +45,9 @@ describe Oystercard do
 
   describe '#touch_out' do
 
-    before do
+    before(:each) do
       subject.top_up(described_class::MAXIMUM_BALANCE)
       subject.touch_in(entry_station)
-      subject.touch_out(exit_station)
     end
 
     it 'deducts the correct amount from card' do
@@ -64,6 +63,11 @@ describe Oystercard do
     it 'allows you to touch out twice with nil entry station' do
       subject.touch_out(double(:station))
       expect(subject.journey_history[-1].entry_station).to eq nil
+    end
+
+    it "charges penalty if you touch out twice" do
+      subject.touch_out(double(:station))
+      expect{subject.touch_out(double(:station))}.to change{subject.balance}.by(-1*described_class::PENALTY_FARE)
     end
   end
 
