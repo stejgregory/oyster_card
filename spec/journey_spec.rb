@@ -52,5 +52,13 @@ describe Journey do
       described_class.new
       expect(subject.fare).to eq(Oystercard::PENALTY_FARE)
     end
+
+    it "should return a hash with journey details" do
+      journey = {:entry_station => "waterloo", :exit_station => "borough", :fare => Oystercard::MINIMUM_FARE}
+      our_journey = described_class.new("waterloo")
+      expect(our_journey.end("borough")).to eq journey
+    end
+
+
   end
 end

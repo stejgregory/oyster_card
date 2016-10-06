@@ -22,7 +22,7 @@ class Oystercard
   def touch_in(entry_station)
     fail "Insufficient balance" if balance < MINIMUM_FARE
     @journey_log.last.end(nil) if (!@journey_log.empty? && !@journey_log.last.complete?)
-    @journey_log << Journey.new(entry_station)
+    @current_journey = Journey.new(entry_station)
   end
 
   def touch_out(exit_station)
@@ -31,7 +31,7 @@ class Oystercard
        journey = Journey.new
        @journey_log << journey.end(exit_station)
     else
-      @journey_log.last.end(exit_station)
+      @curent_journey.end(exit_station)
     end
   end
 
