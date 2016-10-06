@@ -21,7 +21,7 @@ class Oystercard
 
   def touch_in(entry_station)
     fail "Insufficient balance" if balance < MINIMUM_FARE
-    @journey_log.last.end(nil) if (!@journey_log.empty? && !@journey_log.last.complete?)
+    charge_penalty_fare if @current_journey # (!@journey_log.empty? && !@journey_log.last.complete?) ##CHANGE ME
     @current_journey = Journey.new(entry_station)
   end
 
@@ -29,9 +29,10 @@ class Oystercard
     deduct(MINIMUM_FARE)
     if @journey_log.last.complete?
        journey = Journey.new
-       @journey_log << journey.end(exit_station)
+       @journey_log << journey.end(exit_station) ##CHANGE ME
     else
-      @curent_journey.end(exit_station)
+      @curent_journey.end(exit_station) ##Change ME
+      @current_journey=nil
     end
   end
 
@@ -43,6 +44,11 @@ class Oystercard
 
   def deduct(money)
     @balance -= money
+  end
+
+  def charge_penalty_fare
+    @current_journey.end(nil)
+    deduct(@current_journey.fare)  # @balance -= @current_journey[:fare]
   end
 
 end

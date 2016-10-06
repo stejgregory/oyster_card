@@ -33,15 +33,13 @@ describe Oystercard do
 
     it 'creates new journey' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in(entry_station)
-      expect(subject.journey_history[-1].entry_station).to eq(entry_station)
+      expect(subject.touch_in(entry_station).class).to eq(Journey)
     end
-
-    it 'if user touches in twice, end previous journey' do
+    
+    it 'if user touches in twice, they are charged a penalty' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
       subject.touch_in(entry_station)
-      subject.touch_in(double(:station))
-      expect(subject.journey_history[-2].exit_station).to eq(nil)
+      expect{subject.touch_in(double(:station))}.to change{subject.balance}.by(-1*described_class::PENALTY_FARE)
     end
   end
 

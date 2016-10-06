@@ -25,7 +25,20 @@ describe Journey do
     end
   end
 
-  context 'given an exit station' do
+  describe '#end' do
+    before do
+      described_class.new(entry_station = "station")
+      subject.end("other_station")
+    end
+
+    it "should return a hash with journey details" do
+      journey = {:entry_station => "waterloo", :exit_station => "borough", :fare => Oystercard::MINIMUM_FARE}
+      our_journey = described_class.new("waterloo")
+      expect(our_journey.end("borough")).to eq journey
+    end
+  end
+
+  describe '#complete' do
     before do
       described_class.new(entry_station = "station")
       subject.end("other_station")
@@ -52,13 +65,5 @@ describe Journey do
       described_class.new
       expect(subject.fare).to eq(Oystercard::PENALTY_FARE)
     end
-
-    it "should return a hash with journey details" do
-      journey = {:entry_station => "waterloo", :exit_station => "borough", :fare => Oystercard::MINIMUM_FARE}
-      our_journey = described_class.new("waterloo")
-      expect(our_journey.end("borough")).to eq journey
-    end
-
-
   end
 end
