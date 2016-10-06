@@ -1,34 +1,32 @@
-# require 'station'
-
 class Journey
+require_relative 'oystercard'
+
+attr_reader :entry_station, :exit_station
+
 PENALTY_FARE = 6
+DEFAULT_ENTRY = nil
+DEFAULT_EXIT = nil
 
-attr_reader :entry_station, :exit_station, :current_journey
-
-  def initialize(*entry_station)
-    @entry_station = nil
-    @exit_station = nil
-    @current_journey = Hash.new
-  end
-
-  def finish(station)
-    @exit_station = station
-  end
-
-  def start(station)
+  def initialize(station = DEFAULT_ENTRY)
     @entry_station = station
   end
 
-  def complete?
-    !!exit_station
+  def finish(station = DEFAULT_EXIT)
+    @exit_station = station
   end
 
 
-  def fare(fare = PENALTY_FARE)
-      if @entry_station == nil || @exit_station == nil
-      return PENALTY_FARE
+
+  def complete?
+    !!@entry_station && !!@exit_station
+  end
+
+
+  def fare
+      if complete? == true
+      Oystercard::MINIMUM_FARE
       else
-      fare = 1
+      PENALTY_FARE
       end
   end
 

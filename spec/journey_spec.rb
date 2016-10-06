@@ -1,21 +1,19 @@
 require 'journey'
+require 'oystercard'
 
 describe Journey do
-  let(:station) { double :station, zone: 1}
+  subject{described_class.new(entry_station)}
+  let(:entry_station) {double :station}
+  let(:exit_station) {double :station}
 
-  describe '#initialize' do
-    it 'sets entry station to equal nil' do
-      expect(subject.entry_station).to eq nil
-    end
+  it 'A journey has started' do
+    expect(subject.entry_station).to eq entry_station
+  end
 
     it 'sets exit_station to equal nil' do
       expect(subject.exit_station).to eq nil
     end
 
-    it 'has an empty current journey' do
-      expect(subject.current_journey).to be_empty
-    end
-  end
 
   describe '#complete?' do
     it "knows if a journey is not complete" do
@@ -23,17 +21,10 @@ describe Journey do
     end
   end
 
-  describe '#finish' do
-    it 'it is set to exit_station' do
-      expect(subject.finish(station)).to eq(station)
+    it 'knows if a journey is complete' do
+      subject.finish(exit_station)
+      expect(subject).to be_complete
     end
-  end
-
-  describe '#start' do
-    it 'it is set to entry_station' do
-      expect(subject.start(station)).to eq(station)
-    end
-  end
 
   describe '#fare' do
     it 'has a penalty fare by default' do
@@ -41,23 +32,16 @@ describe Journey do
     end
   end
 
-  context 'give an entry exit station' do
-  let(:entry_station) {double :entry_station}
-  let(:exit_station) {double :exit_station}
-
-  before do
-    subject.start(entry_station)
-    subject.finish(exit_station)
-  end
-
-    it 'calculates a fare' do
-      expect(subject.fare).to eq 1
+  it 'calculates a fare' do
+      subject.finish(exit_station)
+      expect(subject.fare).to eq Oystercard::MINIMUM_FARE
     end
 
     it "knows if a journey is complete" do
+      subject.finish(exit_station)
     expect(subject).to be_complete
   end
-  end
+end
 
 
 
@@ -68,5 +52,3 @@ describe Journey do
 # calculation the fair of a journey
 
 # returning wether or not the journey is complete
-
-end
