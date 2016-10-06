@@ -34,10 +34,13 @@ describe Oystercard do
   end
 
   it 'will raise error if balance is less than minimum fare' do
-    #allow(subject).to receive(:entry_station)
     expect{ subject.touch_in(:entry_station) }.to raise_error "Insufficient funds"
-
   end
+
+  # it 'will raise erroy if user touching card in twice' do
+  #   subject.touch_in(:entry_station)
+  #   expect{ subject.touch_in(:entry_station) }.to raise_error "Already touched in!"
+  # end
 
   context 'using a card' do
         before do
