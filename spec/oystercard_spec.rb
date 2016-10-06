@@ -54,17 +54,6 @@ describe Oystercard do
       expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by (-described_class::MINIMUM_FARE)
     end
 
-    it 'allows you to touch out without touching in and saves second station' do
-      second_touch_out = double(:station)
-      subject.touch_out(second_touch_out)
-      expect(subject.journey_history[-1].exit_station).to eq(second_touch_out)
-    end
-
-    it 'allows you to touch out twice with nil entry station' do
-      subject.touch_out(double(:station))
-      expect(subject.journey_history[-1].entry_station).to eq nil
-    end
-
     it "charges penalty if you touch out twice" do
       subject.touch_out(double(:station))
       expect{subject.touch_out(double(:station))}.to change{subject.balance}.by(-1*described_class::PENALTY_FARE)
