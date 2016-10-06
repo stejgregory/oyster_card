@@ -19,19 +19,19 @@ class Oystercard
     @balance += money
   end
 
-  def touch_in(entry_s)
+  def touch_in(entry_station)
     fail "Insufficient balance" if balance < MINIMUM_FARE
     @journey_log.last.end(nil) if (!@journey_log.empty? && !@journey_log.last.complete?)
-    @journey_log << Journey.new(entry_s)
+    @journey_log << Journey.new(entry_station)
   end
 
-  def touch_out(exit_s)
+  def touch_out(exit_station)
     deduct(MINIMUM_FARE)
     if @journey_log.last.complete?
        journey = Journey.new
-       @journey_log << journey.end(exit_s)
+       @journey_log << journey.end(exit_station)
     else
-      @journey_log.last.end(exit_s)
+      @journey_log.last.end(exit_station)
     end
   end
 

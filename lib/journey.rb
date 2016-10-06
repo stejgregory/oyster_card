@@ -15,7 +15,7 @@ class Journey
   end
 
   def complete?
-      @complete
+    @complete
   end
 
   def fare
