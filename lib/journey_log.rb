@@ -1,4 +1,4 @@
-require "oystercard"
+# xrequire 'oystercard'
 
 class JourneyLog
 
@@ -8,6 +8,6 @@ class JourneyLog
   end
 
   def start
-    
+
   end
 end
