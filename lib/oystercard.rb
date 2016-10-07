@@ -1,5 +1,6 @@
 
 require_relative 'journey'
+require_relative 'journey_log'
 
 class Oystercard
 
@@ -52,7 +53,7 @@ class Oystercard
   end
 
   def end_current_journey(exit_station)
-    @current_journey.end(exit_station)
+    @journey_log << @current_journey.end(exit_station)
     deduct(@current_journey.fare)
     @current_journey = nil
   end
