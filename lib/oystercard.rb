@@ -12,7 +12,7 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @journey_log = []
+    @journey_log = JourneyLog.new #[]
   end
 
   def top_up(money)
@@ -25,6 +25,7 @@ class Oystercard
     double_touch_in if @current_journey # (!@journey_log.empty? && !@journey_log.last.complete?)
     # charge_penalty_fare(nil) if @current_journey # (!@journey_log.empty? && !@journey_log.last.complete?) ##CHANGE ME
     @current_journey = Journey.new(entry_station)
+    @journey_log.start(@current_journey)
   end
 
   def touch_out(exit_station)
