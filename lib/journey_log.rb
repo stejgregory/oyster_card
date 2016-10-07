@@ -1,5 +1,3 @@
-# xrequire 'oystercard'
-
 class JourneyLog
 
   def initialize(journey_class: )
